@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { GoArrowUpRight } from 'react-icons/go';
 import './CardNav.css';
@@ -21,7 +21,7 @@ const CardNav = ({
   const cardsRef = useRef([]);
   const tlRef = useRef(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
     };
@@ -85,7 +85,7 @@ const CardNav = ({
     return tl;
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const tl = createTimeline();
     tlRef.current = tl;
 
@@ -96,7 +96,7 @@ const CardNav = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ease, items]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
       if (!tlRef.current) return;
 

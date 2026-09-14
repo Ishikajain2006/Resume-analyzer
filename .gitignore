@@ -40,3 +40,4 @@ next-env.d.ts
 server.log
 meow90/
 public/uploads/
+proxy-3001.mjs
