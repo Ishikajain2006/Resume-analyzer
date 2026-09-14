@@ -1,3 +1,9 @@
+/**
+ * @engine NemotronATS Diagnostic Engine
+ * @watermark Made by PookieStudios
+ * @author PookieStudios
+ * @copyright (c) PookieStudios. All rights reserved.
+ */
 import { OpenAI } from "openai";
 import { env } from "@/lib/env";
 import { z } from "zod";
@@ -11,6 +17,10 @@ const openai = new OpenAI({
 
 const ATS_ANALYSIS_SYSTEM_PROMPT = `You are a Principal Engineering Recruiter and ATS Compliance Diagnostic Engine.
 Evaluate the candidate's resume strictly against the target job requirements without hallucination.
+
+CRITICAL INSTRUCTION:
+Do not include any thinking process, reasoning chain, preamble, conversational intro, or text before/after the JSON.
+Start immediately with { and end with }.
 
 You must return ONLY a valid JSON object strictly matching this schema:
 {
@@ -40,7 +50,7 @@ Rules:
 3. "subScores": Realistic breakdown between 0 and 100.
 4. "categorizedKeywords": Group matching and missing keywords across standard engineering categories.
 5. "summary": 2-3 objective, professional sentences summarizing technical candidate fit and key gap areas.
-6. Do not include conversational markdown, introductory text, or explanations outside the JSON object.`;
+6. Do not include markdown code fences or any other text outside the JSON object.`;
 
 const categorizedGroupSchema = z.object({
   category: z.string().default("General"),
@@ -171,22 +181,27 @@ export async function analyzeResumeAgainstJob(
   const selectedModel = modelName?.trim() || env.NVIDIA_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b";
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: selectedModel,
-      messages: [
-        {
-          role: "system",
-          content: ATS_ANALYSIS_SYSTEM_PROMPT,
-        },
-        {
-          role: "user",
-          content: `RESUME SOURCE TEXT:\n${sanitizedResume}\n\nTARGET JOB SPECIFICATION:\n${sanitizedJd}`,
-        },
-      ],
-      temperature: 0.2,
-      response_format: { type: "json_object" },
-      max_tokens: 1600,
-    });
+    const completion = await openai.chat.completions.create(
+      {
+        model: selectedModel,
+        messages: [
+          {
+            role: "system",
+            content: ATS_ANALYSIS_SYSTEM_PROMPT,
+          },
+          {
+            role: "user",
+            content: `RESUME SOURCE TEXT:\n${sanitizedResume}\n\nTARGET JOB SPECIFICATION:\n${sanitizedJd}`,
+          },
+        ],
+        temperature: 0.2,
+        response_format: { type: "json_object" },
+        max_tokens: 3000,
+      },
+      {
+        signal: AbortSignal.timeout(18000),
+      }
+    );
 
     const content = completion.choices[0]?.message?.content;
     if (!content) {
@@ -195,7 +210,7 @@ export async function analyzeResumeAgainstJob(
 
     return validateAtsAnalysisResponse(content, sanitizedResume, sanitizedJd);
   } catch (error) {
-    console.warn("ATS Analyzer fallback triggered:", error);
+    console.warn("ATS Analyzer API fallback triggered:", error);
     return generateHeuristicAts(sanitizedResume, sanitizedJd);
   }
 }

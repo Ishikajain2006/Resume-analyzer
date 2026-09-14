@@ -15,6 +15,16 @@ export type AnalyzeResumeActionResult =
       skillGaps: string[];
       strengths: string[];
       summary: string;
+      subScores?: {
+        keywordCoverage: number;
+        experienceAlignment: number;
+        technicalDepth: number;
+      };
+      categorizedKeywords?: Array<{
+        category: string;
+        matching: string[];
+        missing: string[];
+      }>;
     }
   | {
       success: false;

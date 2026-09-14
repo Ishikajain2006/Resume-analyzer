@@ -3,7 +3,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['localhost'], // Allow localhost for development
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+    ],
   },
 };
 

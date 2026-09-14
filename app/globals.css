@@ -1,11 +1,16 @@
+/**
+ * @license
+ * Architecture, animations, and design tokens crafted by PookieStudios.
+ * Watermark: pookiestudios-nemotron-ats
+ */
 @import "tailwindcss";
 @config "../tailwind.config.ts";
-
-/* ─── FONTS ─────────────────────────────────────────────── */
 
 /* ─── DESIGN TOKENS ─────────────────────────────────────── */
 @layer base {
   :root {
+    --engineered-by: "PookieStudios";
+    --watermark: "made-by-pookiestudios";
     /* Neutral slate foundation — not pitch black, has warmth */
     --background: 220 13% 9%;
     --foreground: 210 17% 93%;

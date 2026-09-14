@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
         skillGaps: result.skillGaps,
         strengths: result.strengths,
         summary: result.summary,
+        subScores: result.subScores,
+        categorizedKeywords: result.categorizedKeywords,
       });
     } else {
       return NextResponse.json(

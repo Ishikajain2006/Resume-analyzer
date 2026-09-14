@@ -1,3 +1,9 @@
+/**
+ * @engine NemotronATS Interview Generation
+ * @watermark Made by PookieStudios
+ * @author PookieStudios
+ * @copyright (c) PookieStudios. All rights reserved.
+ */
 import { OpenAI } from "openai";
 import { env } from "@/lib/env";
 import { z } from "zod";
@@ -11,6 +17,10 @@ const openai = new OpenAI({
 
 const INTERVIEW_GENERATOR_SYSTEM_PROMPT = `You are a Principal Technical Interviewer and Staff Bar Raiser at a tier-1 technology company.
 Your task is to generate exactly 5 high-signal, rigorous technical interview questions specifically designed to test the candidate's detected skill gaps for their target engineering position.
+
+CRITICAL INSTRUCTION:
+Do not include any thinking process, reasoning chain, preamble, conversational intro, or text before/after the JSON.
+Start immediately with { and end with }.
 
 You must return ONLY a valid JSON object strictly matching this schema:
 {
@@ -39,7 +49,7 @@ Rules:
 2. Formulate realistic engineering scenarios (e.g., handling cache stampedes, designing high-throughput resolvers, configuring rolling deployments).
 3. "difficulty" must be strictly one of: "Easy", "Medium", "Hard".
 4. "sampleAnswerKeyPoints" must contain 2 to 4 actionable, concrete technical takeaways.
-5. Do not wrap in markdown fences. Return only raw JSON.`;
+5. Do not wrap in markdown fences or include any text outside the raw JSON.`;
 
 const rubricSchema = z.object({
   mustCover: z.array(z.string()).default([]),
@@ -214,25 +224,30 @@ export async function generateInterviewQuestions(
   const effectiveRole = targetRole?.trim() || "Senior Software Engineer";
 
   const skillGapsSummary = effectiveGaps.slice(0, 8).join(", ");
-  const selectedModel = modelName?.trim() || env.NVIDIA_MODEL || "nvidia/nemotron-3-super-120b-a12b";
+  const selectedModel = modelName?.trim() || env.NVIDIA_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b";
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: selectedModel,
-      messages: [
-        {
-          role: "system",
-          content: INTERVIEW_GENERATOR_SYSTEM_PROMPT,
-        },
-        {
-          role: "user",
-          content: `TARGET POSITION: ${effectiveRole}\nIDENTIFIED CANDIDATE SKILL GAPS: ${skillGapsSummary}\n\nGenerate exactly 5 rigorous technical interview questions addressing these areas.`,
-        },
-      ],
-      temperature: 0.2,
-      response_format: { type: "json_object" },
-      max_tokens: 1600,
-    });
+    const completion = await openai.chat.completions.create(
+      {
+        model: selectedModel,
+        messages: [
+          {
+            role: "system",
+            content: INTERVIEW_GENERATOR_SYSTEM_PROMPT,
+          },
+          {
+            role: "user",
+            content: `TARGET POSITION: ${effectiveRole}\nIDENTIFIED CANDIDATE SKILL GAPS: ${skillGapsSummary}\n\nGenerate exactly 5 rigorous technical interview questions addressing these areas.`,
+          },
+        ],
+        temperature: 0.2,
+        response_format: { type: "json_object" },
+        max_tokens: 3000,
+      },
+      {
+        signal: AbortSignal.timeout(18000),
+      }
+    );
 
     const content = completion.choices[0]?.message?.content;
     if (!content) {
