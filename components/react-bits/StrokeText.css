@@ -1,0 +1,27 @@
+.stroke-text-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.stroke-text-svg {
+  overflow: visible;
+}
+
+.stroke-text {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  font-family: inherit;
+}
+
+.stroke-text.animate {
+  animation: draw-stroke var(--duration) ease-out var(--delay) forwards;
+}
+
+@keyframes draw-stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

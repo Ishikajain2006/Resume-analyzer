@@ -1,0 +1,88 @@
+.staggered-menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.staggered-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  z-index: 20;
+  position: relative;
+}
+
+.staggered-menu-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 18px;
+  height: 12px;
+}
+
+.staggered-menu-icon span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: left center;
+}
+
+.staggered-menu-icon.open span:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.staggered-menu-icon.open span:nth-child(2) {
+  opacity: 0;
+  width: 0;
+}
+
+.staggered-menu-icon.open span:nth-child(3) {
+  transform: rotate(-45deg);
+}
+
+.staggered-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  border-radius: 8px;
+  border: 1px solid;
+  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  z-index: 10;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.staggered-menu-list {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.staggered-menu-item {
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.staggered-menu-item a {
+  display: block;
+  padding: 12px 20px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease, padding-left 0.2s ease;
+}
+
+.staggered-menu-item a:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding-left: 24px;
+}
