@@ -37,3 +37,6 @@ next-env.d.ts
 
 # local db
 .data/
+server.log
+meow90/
+public/uploads/
