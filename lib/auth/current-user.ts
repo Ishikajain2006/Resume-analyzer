@@ -26,8 +26,11 @@ export async function getCurrentUser(): Promise<AppUser | null> {
     clerkUserId = null;
   }
 
-  // If no Clerk user is signed in, use local demo candidate so the app is always runnable & testable
-  const targetClerkId = clerkUserId || "demo_candidate_local";
+  if (!clerkUserId) {
+    return null;
+  }
+
+  const targetClerkId = clerkUserId;
 
   // Try to find the user in our database
   let user = await prisma.user.findUnique({

@@ -115,6 +115,94 @@ function validateInterviewQuestionsResponse(rawContent: string): InterviewQuesti
   return questions;
 }
 
+function generateHeuristicInterviewQuestions(skillGaps: string[], targetRole: string): InterviewQuestion[] {
+  const gaps = skillGaps?.length > 0 ? skillGaps : ["Distributed Systems", "API Performance", "Database Optimization", "Reliability"];
+  const role = targetRole || "Senior Software Engineer";
+
+  return [
+    {
+      id: 1,
+      question: `For a ${role} position, how would you design and implement low-latency caching and data invalidation when working with ${gaps[0] || "distributed state"}?`,
+      category: gaps[0] || "Architecture & Systems",
+      difficulty: "Hard",
+      sampleAnswerKeyPoints: [
+        "Cache-aside pattern vs write-through strategies",
+        "Handling thundering herd and stampede prevention with mutex leases",
+        "Event-driven invalidation via CDC or Pub/Sub queues"
+      ],
+      rubric: {
+        mustCover: ["Cache invalidation latency", "Consistency vs Availability tradeoffs"],
+        tradeoffs: ["P99 latency improvement vs stale read window"],
+        pitfalls: ["Unbounded TTLs causing memory leaks"]
+      }
+    },
+    {
+      id: 2,
+      question: `In your production experience, what strategies do you employ to diagnose and resolve P99 latency spikes and database connection pooling bottlenecks under high concurrency?`,
+      category: "Performance & Reliability",
+      difficulty: "Medium",
+      sampleAnswerKeyPoints: [
+        "Connection pool sizing (HikariCP/Prisma/pgpool) formulas",
+        "Index optimization, slow-query log profiling, and query plan analysis",
+        "Circuit breakers and graceful degradation during pool exhaustion"
+      ],
+      rubric: {
+        mustCover: ["Connection pool sizing", "EXPLAIN ANALYZE interpretation"],
+        tradeoffs: ["Aggressive timeouts vs dropping valid user requests"],
+        pitfalls: ["Starving the pool with long-running transactions"]
+      }
+    },
+    {
+      id: 3,
+      question: `Describe how you structure resilient end-to-end type safety, validation, and error boundaries across modern full-stack TypeScript applications.`,
+      category: "Frontend & API Architecture",
+      difficulty: "Medium",
+      sampleAnswerKeyPoints: [
+        "Runtime schema validation using Zod/Valibot at network boundaries",
+        "Discriminated union response modeling for deterministic client error handling",
+        "Next.js App Router error boundaries and progressive hydration"
+      ],
+      rubric: {
+        mustCover: ["Network boundary validation", "Shared client-server types"],
+        tradeoffs: ["Payload parsing overhead vs runtime crash safety"],
+        pitfalls: ["Blindly trusting `as Type` assertions in production code"]
+      }
+    },
+    {
+      id: 4,
+      question: `How would you architect a fault-tolerant asynchronous background worker queue to handle bursty document parsing and AI model inference?`,
+      category: "Cloud & Asynchronous Architecture",
+      difficulty: "Hard",
+      sampleAnswerKeyPoints: [
+        "Message queues (BullMQ/SQS) with dead-letter queues and exponential backoff",
+        "Worker concurrency control and backpressure handling",
+        "Idempotency keys to guarantee at-least-once or exactly-once delivery"
+      ],
+      rubric: {
+        mustCover: ["Dead-letter queues", "Idempotent processing logic"],
+        tradeoffs: ["Polling intervals vs long-polling network overhead"],
+        pitfalls: ["Missing timeout termination for zombie inference tasks"]
+      }
+    },
+    {
+      id: 5,
+      question: `Explain your approach to monitoring, distributed tracing, and root cause analysis in modern containerized microservices.`,
+      category: "Observability & SRE",
+      difficulty: "Easy",
+      sampleAnswerKeyPoints: [
+        "OpenTelemetry trace propagation across HTTP/gRPC boundaries",
+        "P99 latency anomaly detection and high-cardinality metric alerting",
+        "Post-mortem blameless culture and preventative remediation"
+      ],
+      rubric: {
+        mustCover: ["Trace context propagation", "Log correlation with Trace IDs"],
+        tradeoffs: ["Sampling rate vs storage cost"],
+        pitfalls: ["Over-alerting and metric noise during deployments"]
+      }
+    }
+  ];
+}
+
 export async function generateInterviewQuestions(
   skillGaps: string[],
   targetRole: string,
@@ -148,14 +236,12 @@ export async function generateInterviewQuestions(
 
     const content = completion.choices[0]?.message?.content;
     if (!content) {
-      throw new Error("Empty response returned from NVIDIA interview generator.");
+      return generateHeuristicInterviewQuestions(effectiveGaps, effectiveRole);
     }
 
     return validateInterviewQuestionsResponse(content);
   } catch (error) {
-    console.error("Error calling interview generator service:", error);
-    throw new Error(
-      error instanceof Error ? error.message : "Failed to generate interview questions"
-    );
+    console.warn("Interview generator fallback triggered:", error);
+    return generateHeuristicInterviewQuestions(effectiveGaps, effectiveRole);
   }
 }
