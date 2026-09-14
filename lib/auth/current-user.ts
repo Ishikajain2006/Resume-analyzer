@@ -19,7 +19,7 @@ export async function getCurrentUser(): Promise<AppUser | null> {
   let clerkUserId: string | null = null;
 
   try {
-    const authData = auth();
+    const authData = await auth();
     clerkUserId = authData?.userId || null;
   } catch (err) {
     // If called outside of request context or unauthenticated

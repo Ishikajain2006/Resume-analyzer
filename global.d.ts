@@ -19,3 +19,8 @@ declare module "pdf-parse" {
 
   export default pdf;
 }
+
+declare module "@/components/react-bits/*" {
+  const Component: any;
+  export default Component;
+}

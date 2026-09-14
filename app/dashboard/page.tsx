@@ -21,6 +21,7 @@ import { sounds } from "@/lib/sound";
 import GhostFibers from "@/components/react-bits/GhostFibers";
 import LineSidebar from "@/components/react-bits/LineSidebar";
 import BorderGlow from "@/components/react-bits/BorderGlow";
+import TerminalLoader from "@/components/TerminalLoader";
 
 const MODELS = [
   { id: "nvidia/nemotron-3.5-lightning-30b-a3b", name: "Nemotron Lightning", sub: "30B · ~500ms", tag: "Fastest" },
@@ -282,7 +283,7 @@ export default function StudioPage() {
             </button>
             {isLoaded && isSignedIn ? (
               <div style={{ display: "flex", alignItems: "center", gap: 10, paddingLeft: 12, borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
-                <UserButton afterSignOutUrl="/" />
+                <UserButton />
                 <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", fontFamily: "'Geist Mono', monospace", fontWeight: 500 }}>
                   {user?.firstName || user?.primaryEmailAddress?.emailAddress?.split("@")[0] || "User"}
                 </span>
@@ -375,7 +376,7 @@ export default function StudioPage() {
                     )}
                   </div>
 
-                  <ResumeUploader onUpload={handleResumeUpload} disabled={isAnalyzing} currentResumeId={resumeId} />
+                  <ResumeUploader onResumeUpload={handleResumeUpload} isProcessing={isAnalyzing} />
 
                   {resumeText && (
                     <div style={{ marginTop: 20, padding: 16, background: "rgba(255,255,255,0.02)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.06)" }}>

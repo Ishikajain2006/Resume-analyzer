@@ -19,7 +19,7 @@ const uploadButtonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link:
-          "text-primary underline-offset-4 hover:underline text-[hover:underline:underlined]",
+          "text-primary underline-offset-4 hover:underline",
       },
     },
     defaultVariants: {
