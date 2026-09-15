@@ -178,12 +178,12 @@ export function AtsScoreCard({
           </div>
         </div>
 
-        {/* Right: Detailed Breakdown Matrix (8 cols) */}
-        <div className="lg:col-span-8 space-y-5">
-          <div className="space-y-1.5">
+        {/* Right: Detailed Breakdown Matrix */}
+        <div className="lg:col-span-8 space-y-4">
+          <div className="space-y-1">
             <div className="flex items-center space-x-2 text-xs font-mono uppercase tracking-wider text-muted-foreground">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>NVIDIA Nemotron 3 Super ATS Diagnostic</span>
+              <span>Resume Match & Compatibility Report</span>
             </div>
             <p className="text-sm text-foreground/90 leading-relaxed">
               {description}

@@ -293,12 +293,12 @@ export function InterviewQuestions({
             variant="gradient"
             onClick={handleGenerateClick}
             disabled={isGenerating || !targetRole.trim()}
-            className="h-10 px-6 shrink-0 shadow-lg shadow-emerald-500/15 font-bold"
+            className="h-10 px-5 shrink-0 shadow-lg shadow-purple-500/15 font-semibold text-sm w-full sm:w-auto"
           >
             {isGenerating ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Nemotron AI Formulating...
+                Formulating questions...
               </>
             ) : (
               <>
@@ -672,16 +672,16 @@ export function InterviewQuestions({
 
       {/* Empty State */}
       {!questions && (
-        <div className="rounded-2xl border border-dashed border-white/[0.1] bg-card/40 p-10 text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mx-auto text-cyan-400">
+        <div className="rounded-2xl border border-dashed border-white/[0.1] bg-card/40 p-8 sm:p-10 text-center space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto text-purple-400">
             <HelpCircle className="w-6 h-6" />
           </div>
           <div className="space-y-1 max-w-sm mx-auto">
             <h4 className="text-sm font-bold text-foreground">
-              Technical Interview Studio Ready
+              Interview Simulator Ready
             </h4>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Click &quot;Generate 5 Questions&quot; above to simulate real technical screening questions formulated by NVIDIA Nemotron 3 Super.
+              Click &quot;Generate 5 Questions&quot; above to simulate real technical screening scenarios tailored to your resume and target role.
             </p>
           </div>
         </div>

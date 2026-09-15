@@ -25,15 +25,15 @@ import BorderGlow from "@/components/react-bits/BorderGlow";
 import TerminalLoader from "@/components/TerminalLoader";
 
 const MODELS = [
-  { id: "nvidia/nemotron-3.5-lightning-30b-a3b", name: "Nemotron Lightning", sub: "30B · ~500ms", tag: "Fastest" },
-  { id: "nvidia/nemotron-3-super-120b-a12b",      name: "Nemotron Super",    sub: "120B · ~2.5s", tag: "Best quality" },
-  { id: "meta/llama-3.2-11b-vision-instruct",     name: "Llama 3.2 Vision",  sub: "11B · ~5s",   tag: "Vision" },
+  { id: "nvidia/nemotron-3.5-lightning-30b-a3b", name: "Fast Engine", sub: "Quick scan · ~500ms", tag: "Fast" },
+  { id: "nvidia/nemotron-3-super-120b-a12b",      name: "Deep Match",    sub: "Detailed analysis · ~2.5s", tag: "Recommended" },
+  { id: "meta/llama-3.2-11b-vision-instruct",     name: "Precision Match",  sub: "Comprehensive review",   tag: "Precision" },
 ];
 
 const SIDEBAR_ITEMS = [
   { id: "input",     label: "Resume & Job", icon: "document" },
-  { id: "analysis",  label: "ATS Report",   icon: "chart" },
-  { id: "interview", label: "Interview",    icon: "user" },
+  { id: "analysis",  label: "Match Report", icon: "chart" },
+  { id: "interview", label: "Mock Interview", icon: "user" },
   { id: "history",   label: "History",      icon: "settings" },
 ];
 
@@ -215,9 +215,9 @@ export default function StudioPage() {
           {/* Brand */}
           <div className="order-1" style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
-              <img src="/logo.jpg" alt="NemotronATS Logo" style={{ width: 28, height: 28, borderRadius: 6, objectFit: "cover" }} />
+              <img src="/logo.jpg" alt="Resume Analyser Logo" style={{ width: 28, height: 28, borderRadius: 6, objectFit: "cover" }} />
               <span style={{ fontWeight: 700, fontSize: 14, color: "rgba(255,255,255,0.9)", letterSpacing: "-0.015em" }}>
-                Nemotron<span style={{ color: "#a855f7" }}>ATS</span>
+                Resume <span style={{ color: "#a855f7" }}>Analyser</span>
               </span>
             </Link>
             <span style={{ color: "rgba(255,255,255,0.15)" }}>/</span>
@@ -236,7 +236,7 @@ export default function StudioPage() {
               }}
               className="hover:bg-white/5"
             >
-              <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, fontFamily: "'Geist Mono', monospace" }}>model</span>
+              <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, fontFamily: "'Geist Mono', monospace" }}>engine</span>
               <span style={{ fontWeight: 600 }}>{currentModel.name}</span>
               <span style={{ fontSize: 10, color: "#d8b4fe", background: "rgba(132,0,255,0.15)", border: "1px solid rgba(132,0,255,0.25)", padding: "1px 6px", borderRadius: 4 }}>{currentModel.tag}</span>
               <ChevronDown size={14} style={{ color: "rgba(255,255,255,0.3)", transition: "transform 0.15s", transform: modelOpen ? "rotate(180deg)" : "none" }} />
@@ -251,7 +251,7 @@ export default function StudioPage() {
                 {MODELS.map((m) => (
                   <button
                     key={m.id}
-                    onClick={() => { setSelectedModel(m.id); setModelOpen(false); sounds.tap(); toast.success(`Model: ${m.name}`); }}
+                    onClick={() => { setSelectedModel(m.id); setModelOpen(false); sounds.tap(); toast.success(`Engine: ${m.name}`); }}
                     style={{
                       width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
                       padding: "12px 16px", background: m.id === selectedModel ? "rgba(132,0,255,0.1)" : "transparent",
@@ -312,19 +312,32 @@ export default function StudioPage() {
           />
         </aside>
 
-        <main style={S.main}>
+        <main style={S.main} className="px-3 sm:px-6 py-4 sm:py-8">
 
-          <div className="no-print md:hidden" style={{ marginBottom: 20 }}>
-            {/* Mobile Tab Fallback */}
-            <select 
-              value={activeTab}
-              onChange={(e) => handleTabChange(e.target.value)}
-              className="input-dark w-full"
-            >
-              {SIDEBAR_ITEMS.map(t => (
-                <option key={t.id} value={t.id}>{t.label}</option>
-              ))}
-            </select>
+          {/* Sleek Mobile Tabs Bar */}
+          <div className="no-print md:hidden mb-5">
+            <div className="flex rounded-xl bg-white/[0.04] p-1 border border-white/[0.08] gap-1">
+              {SIDEBAR_ITEMS.map((t) => {
+                const isActive = activeTab === t.id;
+                const isDisabled = (t.id === "analysis" || t.id === "interview") && !atsAnalysis;
+                return (
+                  <button
+                    key={t.id}
+                    disabled={isDisabled}
+                    onClick={() => handleTabChange(t.id)}
+                    className={`flex-1 py-2 px-1 text-center rounded-lg text-xs font-medium transition-all ${
+                      isActive
+                        ? "bg-purple-600 text-white font-semibold shadow-md shadow-purple-600/30"
+                        : isDisabled
+                        ? "text-white/20 cursor-not-allowed"
+                        : "text-white/60 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Context actions */}
@@ -389,24 +402,24 @@ export default function StudioPage() {
                   </div>
                 )}
 
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: 24 }}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
 
                 {/* Left: Resume */}
-                <BorderGlow glowColor="270 100% 65%" backgroundColor="#0c0714" glowIntensity={0.6} animated={false} className="h-full">
-                  <div style={{ padding: 28, display: "flex", flexDirection: "column", height: "100%" }}>
-                    <div style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: 16, marginBottom: 24, display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+                <BorderGlow glowColor="270 100% 65%" backgroundColor="#0c0714" glowIntensity={0.5} animated={false} className="h-full">
+                  <div className="p-4 sm:p-6 flex flex-col h-full">
+                    <div className="border-b border-white/5 pb-3 sm:pb-4 mb-4 sm:mb-5 flex items-center justify-between">
                       <div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                          <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(168,85,247,0.15)", border: "1px solid rgba(168,85,247,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <FileText size={16} style={{ color: "#d8b4fe" }} />
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-7 h-7 rounded-lg bg-purple-500/15 border border-purple-500/30 flex items-center justify-center">
+                            <FileText size={15} className="text-purple-300" />
                           </div>
-                          <span style={{ fontWeight: 600, fontSize: 16, color: "rgba(255,255,255,0.95)" }}>Candidate Resume</span>
+                          <span className="font-semibold text-sm sm:text-base text-white/90">Your Resume</span>
                         </div>
-                        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", fontFamily: "'Geist Mono', monospace" }}>PDF → server-side extraction</p>
+                        <p className="text-xs text-white/40 font-mono">Upload PDF to extract experience</p>
                       </div>
                       {resumeFileUrl && (
-                        <a href={resumeFileUrl} target="_blank" rel="noopener" style={{ fontSize: 13, color: "#a855f7", display: "flex", alignItems: "center", gap: 6, textDecoration: "none", fontWeight: 500 }} className="hover:text-purple-300">
-                          <ExternalLink size={14} /> View PDF
+                        <a href={resumeFileUrl} target="_blank" rel="noopener" className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1.5 font-medium">
+                          <ExternalLink size={13} /> View PDF
                         </a>
                       )}
                     </div>
@@ -414,18 +427,18 @@ export default function StudioPage() {
                     <ResumeUploader onResumeUpload={handleResumeUpload} isProcessing={isAnalyzing} />
 
                     {resumeText && (
-                      <div style={{ marginTop: 20, padding: 16, background: "rgba(255,255,255,0.02)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.06)" }}>
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                          <span style={{ fontSize: 13, color: "#4ade80", display: "flex", alignItems: "center", gap: 6, fontWeight: 600 }}>
-                            <CheckCircle2 size={14} /> Text extracted
-                            <span style={{ color: "rgba(255,255,255,0.3)", fontWeight: 400 }}>{resumeText.length.toLocaleString()} chars</span>
+                      <div className="mt-4 p-3 sm:p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs text-emerald-400 flex items-center gap-1.5 font-semibold">
+                            <CheckCircle2 size={13} /> Resume parsed
+                            <span className="text-white/30 font-normal">({resumeText.length.toLocaleString()} chars)</span>
                           </span>
-                          <button onClick={() => setIsInspectorOpen(true)} style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 5 }} className="hover:text-white">
-                            <Eye size={13} /> Inspect
+                          <button onClick={() => setIsInspectorOpen(true)} className="text-xs text-white/50 hover:text-white flex items-center gap-1">
+                            <Eye size={12} /> Inspect
                           </button>
                         </div>
-                        <div style={{ maxHeight: 120, overflowY: "auto", fontFamily: "'Geist Mono', monospace", fontSize: 12, color: "rgba(255,255,255,0.3)", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
-                          {resumeText.slice(0, 500)}…
+                        <div className="max-h-24 overflow-y-auto font-mono text-[11px] text-white/40 leading-relaxed whitespace-pre-wrap">
+                          {resumeText.slice(0, 400)}…
                         </div>
                       </div>
                     )}
@@ -433,32 +446,31 @@ export default function StudioPage() {
                 </BorderGlow>
 
                 {/* Right: Job */}
-                <BorderGlow glowColor="270 100% 65%" backgroundColor="#0c0714" glowIntensity={0.6} animated={false} className="h-full">
-                  <div style={{ padding: 28, display: "flex", flexDirection: "column", height: "100%" }}>
-                    <div style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", paddingBottom: 16, marginBottom: 24 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                        <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Code2 size={16} style={{ color: "#93c5fd" }} />
+                <BorderGlow glowColor="270 100% 65%" backgroundColor="#0c0714" glowIntensity={0.5} animated={false} className="h-full">
+                  <div className="p-4 sm:p-6 flex flex-col h-full">
+                    <div className="border-b border-white/5 pb-3 sm:pb-4 mb-4 sm:mb-5">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center">
+                          <Code2 size={15} className="text-blue-300" />
                         </div>
-                        <span style={{ fontWeight: 600, fontSize: 16, color: "rgba(255,255,255,0.95)" }}>Job Description</span>
+                        <span className="font-semibold text-sm sm:text-base text-white/90">Target Job Description</span>
                       </div>
-                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", fontFamily: "'Geist Mono', monospace" }}>Paste requirements to benchmark against</p>
+                      <p className="text-xs text-white/40 font-mono">Paste requirements to match against</p>
                     </div>
 
-                    <div style={{ flex: 1, minHeight: 250 }}>
+                    <div className="flex-1 min-h-[220px]">
                       <JobDescriptionInput value={jobDescription} onChange={setJobDescription} disabled={isAnalyzing} />
                     </div>
 
-                    <div style={{ paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: 20 }}>
+                    <div className="pt-4 border-t border-white/5 mt-4">
                       <button
                         onClick={handleAnalyze}
                         disabled={isAnalyzing || !resumeText || !jobDescription.trim()}
-                        className="btn-primary"
-                        style={{ width: "100%", height: 48, fontSize: 15 }}
+                        className="btn-primary w-full h-11 text-sm font-semibold"
                       >
                         {isAnalyzing
-                          ? <><Loader2 size={16} className="animate-spin" /> Computing alignment…</>
-                          : <><Zap size={16} /> Run ATS Diagnostic <kbd style={{ marginLeft: 8 }}>⌘↵</kbd></>}
+                          ? <><Loader2 size={15} className="animate-spin" /> Analysing match…</>
+                          : <><Zap size={15} /> Run Resume Match <kbd className="ml-2 hidden sm:inline">⌘↵</kbd></>}
                       </button>
                     </div>
                   </div>

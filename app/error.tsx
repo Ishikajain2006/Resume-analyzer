@@ -265,7 +265,7 @@ export default function GlobalErrorPage({ error, reset }: ErrorProps) {
         </div>
 
         <div style={{ marginTop: 28, fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Geist Mono', monospace" }}>
-          meow90 // NemotronATS Self-Healing Recovery
+          Resume Analyser Recovery System
         </div>
       </div>
     </div>

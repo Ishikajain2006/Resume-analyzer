@@ -80,10 +80,10 @@ export function DiagnosticSummary({
       </div>
 
       {/* Body: ring + bars */}
-      <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 32, alignItems: "start" }}>
+      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 md:gap-8 items-start">
 
         {/* Score ring */}
-        <div className="panel-sm" style={{ padding: 24, display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minWidth: 160 }}>
+        <div className="panel-sm p-5 sm:p-6 flex flex-col items-center gap-3 w-full md:w-auto md:min-w-[160px]">
           <div style={{ position: "relative", width: 120, height: 120 }}>
             {/* Glow */}
             <div style={{
@@ -125,19 +125,19 @@ export function DiagnosticSummary({
           ))}
 
           {/* Stats row */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {[
               { n: matchingCount, label: "Matched", icon: CheckCircle2, color: "#22c55e", bg: "rgba(34,197,94,0.1)", border: "rgba(34,197,94,0.2)" },
               { n: missingCount, label: "Missing", icon: XCircle, color: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.2)" },
               { n: skillGapsCount, label: "Gaps", icon: AlertTriangle, color: "#a855f7", bg: "rgba(168,85,247,0.1)", border: "rgba(168,85,247,0.2)" },
             ].map(({ n, label, icon: Icon, color, bg, border }) => (
-              <div key={label} className="panel-sm" style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: bg, border: `1px solid ${border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <Icon size={15} style={{ color }} />
+              <div key={label} className="panel-sm" style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 7, background: bg, border: `1px solid ${border}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Icon size={14} style={{ color }} />
                 </div>
-                <div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "rgba(255,255,255,0.9)", lineHeight: 1, fontFamily: "'Geist Mono', monospace" }}>{n}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>{label}</div>
+                <div className="min-w-0">
+                  <div style={{ fontSize: 18, fontWeight: 800, color: "rgba(255,255,255,0.9)", lineHeight: 1, fontFamily: "'Geist Mono', monospace" }}>{n}</div>
+                  <div style={{ fontSize: 10.5, color: "rgba(255,255,255,0.35)", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{label}</div>
                 </div>
               </div>
             ))}
@@ -146,11 +146,11 @@ export function DiagnosticSummary({
       </div>
 
       {/* Summary callout */}
-      <div style={{ marginTop: 20, padding: 16, borderRadius: 8, background: "rgba(255,255,255,0.02)", borderLeft: `3px solid ${tier.ring}`, paddingLeft: 18 }}>
-        <div style={{ fontSize: 11, fontFamily: "'Geist Mono', monospace", color: "rgba(255,255,255,0.3)", marginBottom: 7, display: "flex", alignItems: "center", gap: 5, textTransform: "uppercase", letterSpacing: "0.07em" }}>
-          <ShieldCheck size={12} /> Executive Summary
+      <div style={{ marginTop: 20, padding: 14, borderRadius: 8, background: "rgba(255,255,255,0.02)", borderLeft: `3px solid ${tier.ring}`, paddingLeft: 16 }}>
+        <div style={{ fontSize: 11, fontFamily: "'Geist Mono', monospace", color: "rgba(255,255,255,0.3)", marginBottom: 6, display: "flex", alignItems: "center", gap: 5, textTransform: "uppercase", letterSpacing: "0.07em" }}>
+          <ShieldCheck size={12} /> Match Summary
         </div>
-        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.65, fontWeight: 400 }}>{summary}</p>
+        <p style={{ fontSize: 13.5, color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontWeight: 400 }}>{summary}</p>
       </div>
     </div>
   );

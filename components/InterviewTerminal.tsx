@@ -1338,9 +1338,9 @@ export function InterviewTerminal({ questions, targetRole }: Props) {
               }}
             >
               {isEvaluating ? (
-                <><Loader2 size={14} className="animate-spin" /> Evaluating with Nemotron…</>
+                <><Loader2 size={14} className="animate-spin" /> Evaluating answer…</>
               ) : (
-                <><Sparkles size={14} /> Evaluate My Spoken Answer with Nemotron</>
+                <><Sparkles size={14} /> Evaluate Spoken Answer</>
               )}
             </button>
           </div>

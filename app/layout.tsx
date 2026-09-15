@@ -12,9 +12,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "NemotronATS — AI Resume Analyzer & Interview Prep",
-  description: "Production-grade resume analyzer powered by NVIDIA Nemotron. Instant ATS scores, keyword gap analysis, targeted interview simulation.",
-  keywords: ["resume analyzer", "ATS", "NVIDIA Nemotron", "interview prep"],
+  title: "Resume Analyser — Smart Resume Review & Interview Prep",
+  description: "Get instant resume matching scores, skill gap insights, and interactive interview practice to land your dream job.",
+  keywords: ["resume analyser", "resume checker", "ats score", "interview practice", "job match"],
   authors: [{ name: "PookieStudios" }],
   creator: "PookieStudios",
   publisher: "PookieStudios",

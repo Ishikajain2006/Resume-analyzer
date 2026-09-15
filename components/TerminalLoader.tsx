@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
+import { Loader2, Check } from 'lucide-react';
 
 const MESSAGES = [
-  "Initializing NVIDIA Nemotron-340B inference engine...",
-  "Extracting raw byte stream from candidate profile...",
-  "Normalizing UTF-8 characters and parsing layout...",
-  "Mapping unstructured text to semantic taxonomy...",
-  "Benchmarking against target job specification...",
-  "Computing multidimensional ATS alignment score...",
-  "Generating targeted interview gap questions...",
-  "Finalizing diagnostic report..."
+  "Reading resume details...",
+  "Reviewing key skills and background...",
+  "Comparing with target job requirements...",
+  "Calculating match score and key strengths...",
+  "Highlighting missing keywords & suggestions...",
+  "Preparing your personalized practice interview...",
+  "Finalizing your report..."
 ];
 
 export default function TerminalLoader() {
@@ -20,34 +20,45 @@ export default function TerminalLoader() {
       const timeout = setTimeout(() => {
         setMessages(prev => [...prev, MESSAGES[currentIndex]]);
         setCurrentIndex(prev => prev + 1);
-      }, Math.random() * 600 + 300); // 300-900ms per step
+      }, Math.random() * 400 + 250);
       return () => clearTimeout(timeout);
     }
   }, [currentIndex]);
 
   return (
-    <div className="w-full min-h-[500px] flex flex-col p-6 font-mono text-sm shadow-[0_0_40px_rgba(132,0,255,0.15)]" style={{ background: '#0c0714', borderRadius: 20, border: '1px solid rgba(168,85,247,0.2)' }}>
-      <div className="flex items-center gap-2 mb-6 border-b border-purple-500/20 pb-4">
-        <div className="flex gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500" />
-          <div className="w-3 h-3 rounded-full bg-green-500" />
+    <div className="w-full max-w-xl mx-auto my-6 p-5 sm:p-6 rounded-2xl bg-[#0f0918]/80 border border-purple-500/20 backdrop-blur-md shadow-xl">
+      <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/5">
+        <div className="flex items-center gap-2">
+          <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />
+          <span className="text-xs font-semibold uppercase tracking-wider text-purple-300">
+            Analysing your profile
+          </span>
         </div>
-        <span className="text-purple-400/50 text-xs ml-3 font-semibold tracking-wider">nemotron_inference_stream</span>
+        <span className="text-[11px] font-mono text-white/40">
+          Step {Math.min(currentIndex + 1, MESSAGES.length)} of {MESSAGES.length}
+        </span>
       </div>
-      <div className="flex-1 flex flex-col gap-4">
-        {messages.map((msg, i) => (
-          <div key={i} className="flex items-start gap-4 text-purple-200">
-            <span className="text-purple-500 shrink-0 font-bold">[{new Date().toISOString().split('T')[1].slice(0, 8)}]</span>
-            <span className="opacity-90">{msg}</span>
-          </div>
-        ))}
-        {currentIndex < MESSAGES.length && (
-          <div className="flex items-start gap-4 text-purple-400 animate-pulse">
-            <span className="text-purple-500 shrink-0 font-bold">[{new Date().toISOString().split('T')[1].slice(0, 8)}]</span>
-            <span className="opacity-100">_</span>
-          </div>
-        )}
+      
+      <div className="space-y-2.5">
+        {messages.map((msg, i) => {
+          const isDone = i < messages.length - 1 || currentIndex >= MESSAGES.length;
+          return (
+            <div key={i} className="flex items-center gap-3 text-sm">
+              {isDone ? (
+                <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <Check className="w-2.5 h-2.5" />
+                </div>
+              ) : (
+                <div className="w-4 h-4 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                  <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
+                </div>
+              )}
+              <span className={isDone ? "text-white/60" : "text-purple-200 font-medium"}>
+                {msg}
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

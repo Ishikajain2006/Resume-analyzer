@@ -195,7 +195,7 @@ export default function NotFound() {
         </div>
 
         <div style={{ marginTop: 32, fontSize: 12, color: "rgba(255,255,255,0.3)", fontFamily: "'Geist Mono', monospace" }}>
-          meow90 // NemotronATS Diagnostic Engine
+          Resume Analyser Studio
         </div>
       </div>
     </div>

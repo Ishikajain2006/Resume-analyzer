@@ -29,22 +29,22 @@ Required Qualifications:
 • GraphQL, Redis, PostgreSQL production experience.
 • Docker/Kubernetes container orchestration.`;
 
-const JD_AI = `Role: Staff AI Systems Engineer
+const JD_AI = `Role: Senior Backend / Platform Engineer
 Location: San Francisco, CA / Remote
 
 About the Role:
-Join our AI Infrastructure team building the next generation of LLM-powered applications.
+Join our platform infrastructure team building scalable microservices and data processing pipelines.
 
 Key Responsibilities:
-• Design low-latency inference pipelines with NVIDIA Nemotron.
-• RAG vector pipelines and prompt evaluation systems.
-• Backend microservices in Python (FastAPI) and TypeScript.
-• Streaming responses, rate limiting, LLM observability.
+• Design low-latency API services and streaming data pipelines.
+• Implement distributed caching, queue workers, and background jobs.
+• Build microservices in Node.js/TypeScript and Python (FastAPI).
+• Observability, metrics tracking, rate limiting, and automated alerts.
 
 Required Qualifications:
-• 6+ years software engineering with AI/ML architecture experience.
-• NVIDIA API, embeddings, vector databases (pgvector/Pinecone).
-• TypeScript, Python, Docker, Kubernetes.`;
+• 5+ years software engineering with backend systems architecture.
+• Experience with cloud services, PostgreSQL/Redis, vector indexes.
+• TypeScript, Python, Docker, CI/CD.`;
 
 const JD_DEVOPS = `Role: Principal Cloud Platform & DevOps Architect
 Location: Remote
