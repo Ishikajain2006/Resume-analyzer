@@ -1,4 +1,4 @@
-# Nemotron ATS — AI Resume Analyzer & Technical Interview Workbench
+# AI Resume Analyzer & Technical Interview Workbench
 
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.25-black?style=flat&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue?style=flat&logo=typescript)
