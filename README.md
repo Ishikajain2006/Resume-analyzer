@@ -16,7 +16,7 @@ A production-ready engineering workbench that benchmarks candidate resumes again
 - Zero client-side data leaks; extracts clean UTF-8 text streams for deterministic evaluation.
 - Dedicated 1-click **Sample Resume Loader** (`Alex Mercer`, Senior Full-Stack Engineer) for immediate end-to-end testing.
 
-### 2. Deep Inference ATS Diagnostic Engine (NVIDIA Nemotron 3 Super)
+### 2. Deep Inference ATS Diagnostic Engine 
 - Compares candidate experience directly against the target job description.
 - Evaluates:
   - **ATS Score (0–100)**: Overall candidate alignment rating.
