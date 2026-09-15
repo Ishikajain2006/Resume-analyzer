@@ -6,7 +6,7 @@
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4.1-38B2AC?style=flat&logo=tailwind-css)
 ![Clerk](https://img.shields.io/badge/Clerk-Authentication-6C47FF?style=flat&logo=clerk)
 
-A production-ready engineering workbench designed to benchmark candidate resumes against target job specifications using **NVIDIA Nemotron 3 Super (120B)**, computing granular ATS scores (0–100), multi-vector sub-scores, categorized skill taxonomies, and formulating 5 targeted technical screening scenarios with live Web Speech API rehearsal.
+A production-ready engineering workbench that benchmarks candidate resumes against target job specifications using large language models. Computes granular ATS scores (0–100), multi-vector sub-scores, and categorized skill taxonomies while generating targeted technical screening scenarios with live Web Speech API rehearsal.
 
 ---
 
