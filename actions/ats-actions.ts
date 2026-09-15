@@ -45,10 +45,15 @@ export async function analyzeResumeAction(
   model?: string
 ): Promise<AnalyzeResumeActionResult> {
   try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return { success: false, error: "Unauthorized: Please sign in to analyze resumes" };
-    }
+    const resolvedUser = (await getCurrentUser()) || {
+      id: "guest_candidate_id",
+      clerkId: "guest_candidate_local",
+      email: "candidate@nemotron-ats.local",
+      name: "Guest Candidate",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const user = resolvedUser;
 
     const validation = requestSchema.safeParse({ resumeText, jobDescription, resumeId, model });
     if (!validation.success) {
@@ -58,51 +63,54 @@ export async function analyzeResumeAction(
     // Run AI ATS analysis with selected model
     const analysisResult = await analyzeResumeAgainstJob(resumeText, jobDescription, model);
 
-    // If resumeId provided, find and update that specific resume, otherwise find recent or create
-    let targetResume = null;
-    if (resumeId) {
-      targetResume = await prisma.resume.findUnique({ where: { id: resumeId } });
-    }
+    // Persist to database if available, but never block user result
+    let savedResumeId: string = resumeId || `res_${Date.now()}`;
+    try {
+      let targetResume = null;
+      if (resumeId) {
+        targetResume = await prisma.resume.findUnique({ where: { id: resumeId } });
+      }
 
-    if (!targetResume) {
-      targetResume = await prisma.resume.findFirst({
-        where: { userId: user.id },
-        orderBy: { createdAt: "desc" },
-      });
-    }
+      if (!targetResume && user.id !== "guest_candidate_id") {
+        targetResume = await prisma.resume.findFirst({
+          where: { userId: user.id },
+          orderBy: { createdAt: "desc" },
+        });
+      }
 
-    let savedResumeId: string;
-
-    if (targetResume) {
-      const updated = await prisma.resume.update({
-        where: { id: targetResume.id },
-        data: {
-          parsedText: resumeText,
-          jobDescription: jobDescription,
-          atsScore: analysisResult.atsScore,
-          matchingKeywords: analysisResult.matchingKeywords,
-          missingKeywords: analysisResult.missingKeywords,
-          skillGaps: analysisResult.skillGaps,
-          strengths: analysisResult.strengths,
-          summary: analysisResult.summary,
-        },
-      });
-      savedResumeId = updated.id;
-    } else {
-      const created = await prisma.resume.create({
-        data: {
-          userId: user.id,
-          parsedText: resumeText,
-          jobDescription: jobDescription,
-          atsScore: analysisResult.atsScore,
-          matchingKeywords: analysisResult.matchingKeywords,
-          missingKeywords: analysisResult.missingKeywords,
-          skillGaps: analysisResult.skillGaps,
-          strengths: analysisResult.strengths,
-          summary: analysisResult.summary,
-        },
-      });
-      savedResumeId = created.id;
+      if (targetResume) {
+        const updated = await prisma.resume.update({
+          where: { id: targetResume.id },
+          data: {
+            parsedText: resumeText,
+            jobDescription: jobDescription,
+            atsScore: analysisResult.atsScore,
+            matchingKeywords: analysisResult.matchingKeywords,
+            missingKeywords: analysisResult.missingKeywords,
+            skillGaps: analysisResult.skillGaps,
+            strengths: analysisResult.strengths,
+            summary: analysisResult.summary,
+          },
+        });
+        savedResumeId = updated.id;
+      } else if (user.id !== "guest_candidate_id") {
+        const created = await prisma.resume.create({
+          data: {
+            userId: user.id,
+            parsedText: resumeText,
+            jobDescription: jobDescription,
+            atsScore: analysisResult.atsScore,
+            matchingKeywords: analysisResult.matchingKeywords,
+            missingKeywords: analysisResult.missingKeywords,
+            skillGaps: analysisResult.skillGaps,
+            strengths: analysisResult.strengths,
+            summary: analysisResult.summary,
+          },
+        });
+        savedResumeId = created.id;
+      }
+    } catch (saveErr) {
+      console.warn("Could not persist analysis to DB (continuing with in-memory result):", saveErr);
     }
 
     return {

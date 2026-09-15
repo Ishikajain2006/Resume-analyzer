@@ -13,7 +13,7 @@ import {
   FileText, Loader2, CheckCircle2, Trash2, ExternalLink,
   Download, Search, Eye, X, RotateCcw, History, Terminal,
   AlertTriangle, Printer, Volume2, VolumeX, Code2,
-  ArrowRight, Zap, ChevronDown, Play, Database, Lock,
+  ArrowRight, Zap, ChevronDown, Play, Database, Lock, Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -111,12 +111,6 @@ export default function StudioPage() {
   }, []);
 
   const handleAnalyze = async () => {
-    if (!isSignedIn) {
-      toast.error("Please sign in or create an account to run ATS diagnostic");
-      sounds.click();
-      openSignIn();
-      return;
-    }
     if (!resumeText?.trim()) { toast.error("Upload a resume first"); return; }
     if (!jobDescription.trim()) { toast.error("Paste a job description"); return; }
     setIsAnalyzing(true); sounds.click();
@@ -127,7 +121,7 @@ export default function StudioPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ resumeText, jobDescription, resumeId: resumeId || undefined, model: selectedModel }),
         }),
-        new Promise(r => setTimeout(r, 3000)) // Force at least 3s wait for terminal loading effect
+        new Promise(r => setTimeout(r, 2000)) // Smooth terminal loading
       ]);
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || "Analysis failed");
@@ -140,12 +134,6 @@ export default function StudioPage() {
   };
 
   const handleGenerateInterview = async () => {
-    if (!isSignedIn) {
-      toast.error("Please sign in or create an account to generate interview questions");
-      sounds.click();
-      openSignIn();
-      return;
-    }
     if (!atsAnalysis) { toast.error("Run analysis first"); return; }
     setIsGeneratingQuestions(true); sounds.click();
     try {
@@ -355,24 +343,14 @@ export default function StudioPage() {
               </>
             )}
             {activeTab === "input" && !isAnalyzing && (
-              !isSignedIn && isLoaded ? (
-                <button
-                  onClick={() => { sounds.click(); openSignIn(); }}
-                  className="btn-primary"
-                  style={{ height: 40, fontSize: 14, background: "linear-gradient(135deg, #7928ca, #ff0080)" }}
-                >
-                  <Lock size={15} /> Sign In to Run ATS
-                </button>
-              ) : (
-                <button
-                  onClick={handleAnalyze}
-                  disabled={isAnalyzing || !resumeText || !jobDescription.trim()}
-                  className="btn-primary"
-                  style={{ height: 40, fontSize: 14 }}
-                >
-                  {isAnalyzing ? <><Loader2 size={15} className="animate-spin" /> Analyzing…</> : <><Zap size={15} /> Run ATS <kbd style={{ marginLeft: 6 }}>⌘↵</kbd></>}
-                </button>
-              )
+              <button
+                onClick={handleAnalyze}
+                disabled={isAnalyzing || !resumeText || !jobDescription.trim()}
+                className="btn-primary"
+                style={{ height: 40, fontSize: 14 }}
+              >
+                {isAnalyzing ? <><Loader2 size={15} className="animate-spin" /> Analyzing…</> : <><Zap size={15} /> Run ATS <kbd style={{ marginLeft: 6 }}>⌘↵</kbd></>}
+              </button>
             )}
           </div>
 
@@ -389,26 +367,24 @@ export default function StudioPage() {
               >
                 {!isSignedIn && isLoaded && (
                   <div style={{
-                    marginBottom: 20, padding: "14px 20px", borderRadius: 12,
-                    background: "linear-gradient(90deg, rgba(168,85,247,0.12), rgba(236,72,153,0.12))",
-                    border: "1px solid rgba(168,85,247,0.35)",
+                    marginBottom: 20, padding: "12px 18px", borderRadius: 10,
+                    background: "linear-gradient(90deg, rgba(168,85,247,0.1), rgba(236,72,153,0.1))",
+                    border: "1px solid rgba(168,85,247,0.28)",
                     display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12
                   }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ width: 34, height: 34, borderRadius: 8, background: "rgba(168,85,247,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <Lock size={16} style={{ color: "#d8b4fe" }} />
-                      </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <Sparkles size={16} style={{ color: "#d8b4fe" }} />
                       <div>
-                        <div style={{ fontWeight: 600, fontSize: 13, color: "#fff" }}>Authentication Required</div>
-                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>Please sign in or create an account before running ATS analysis or interview generation.</div>
+                        <div style={{ fontWeight: 600, fontSize: 13, color: "#fff" }}>Ready for Analysis</div>
+                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>AI ATS diagnostics and interview simulations are fully unlocked. Sign in anytime to sync history.</div>
                       </div>
                     </div>
                     <button
                       onClick={() => { sounds.click(); openSignIn(); }}
-                      className="btn-primary"
-                      style={{ height: 34, fontSize: 12, padding: "0 14px", background: "linear-gradient(135deg, #7928ca, #ff0080)" }}
+                      className="btn-ghost"
+                      style={{ height: 32, fontSize: 12, padding: "0 14px", border: "1px solid rgba(168,85,247,0.4)", color: "#d8b4fe" }}
                     >
-                      Sign In / Register →
+                      Sign In (Optional) →
                     </button>
                   </div>
                 )}
@@ -474,26 +450,16 @@ export default function StudioPage() {
                     </div>
 
                     <div style={{ paddingTop: 20, borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: 20 }}>
-                      {!isSignedIn && isLoaded ? (
-                        <button
-                          onClick={() => { sounds.click(); openSignIn(); }}
-                          className="btn-primary"
-                          style={{ width: "100%", height: 48, fontSize: 15, background: "linear-gradient(135deg, #7928ca, #ff0080)" }}
-                        >
-                          <Lock size={16} /> Sign In / Sign Up to Run Diagnostic
-                        </button>
-                      ) : (
-                        <button
-                          onClick={handleAnalyze}
-                          disabled={isAnalyzing || !resumeText || !jobDescription.trim()}
-                          className="btn-primary"
-                          style={{ width: "100%", height: 48, fontSize: 15 }}
-                        >
-                          {isAnalyzing
-                            ? <><Loader2 size={16} className="animate-spin" /> Computing alignment…</>
-                            : <><Zap size={16} /> Run ATS Diagnostic <kbd style={{ marginLeft: 8 }}>⌘↵</kbd></>}
-                        </button>
-                      )}
+                      <button
+                        onClick={handleAnalyze}
+                        disabled={isAnalyzing || !resumeText || !jobDescription.trim()}
+                        className="btn-primary"
+                        style={{ width: "100%", height: 48, fontSize: 15 }}
+                      >
+                        {isAnalyzing
+                          ? <><Loader2 size={16} className="animate-spin" /> Computing alignment…</>
+                          : <><Zap size={16} /> Run ATS Diagnostic <kbd style={{ marginLeft: 8 }}>⌘↵</kbd></>}
+                      </button>
                     </div>
                   </div>
                 </BorderGlow>

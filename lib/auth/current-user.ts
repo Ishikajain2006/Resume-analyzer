@@ -27,7 +27,23 @@ export async function getCurrentUser(): Promise<AppUser | null> {
   }
 
   if (!clerkUserId) {
-    return null;
+    // Graceful fallback to persistent guest / demo candidate in development or when unauthenticated
+    const demoClerkId = "guest_candidate_local";
+    let demoUser = await prisma.user.findUnique({
+      where: { clerkId: demoClerkId },
+    });
+    if (!demoUser) {
+      demoUser = await prisma.user.upsert({
+        where: { clerkId: demoClerkId },
+        update: {},
+        create: {
+          clerkId: demoClerkId,
+          email: "candidate@nemotron-ats.local",
+          name: "Guest Candidate",
+        },
+      });
+    }
+    return demoUser;
   }
 
   const targetClerkId = clerkUserId;

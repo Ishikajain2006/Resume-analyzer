@@ -160,6 +160,12 @@ export class LocalDB {
       saveDb(db);
       return newUser;
     },
+
+    async upsert(args: { where: any; update?: any; create: any }): Promise<UserRecord> {
+      const existing = await LocalDB.user.findUnique({ where: args.where });
+      if (existing) return existing;
+      return LocalDB.user.create({ data: args.create });
+    },
   };
 
   static resume = {

@@ -35,10 +35,15 @@ export async function generateInterviewQuestionsAction(
   model?: string
 ): Promise<GenerateInterviewActionResult> {
   try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return { success: false, error: "Unauthorized: Please sign in to generate questions" };
-    }
+    const resolvedUser = (await getCurrentUser()) || {
+      id: "guest_candidate_id",
+      clerkId: "guest_candidate_local",
+      email: "candidate@nemotron-ats.local",
+      name: "Guest Candidate",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const user = resolvedUser;
 
     const validation = requestSchema.safeParse({ skillGaps, targetRole, resumeId, model });
     if (!validation.success) {
@@ -132,10 +137,15 @@ export async function evaluateAnswerAction(
   rubric?: { mustCover?: string[]; tradeoffs?: string[]; pitfalls?: string[] }
 ): Promise<{ success: boolean; evaluation?: AnswerEvaluationResult; error?: string }> {
   try {
-    const user = await getCurrentUser();
-    if (!user) {
-      return { success: false, error: "Please sign in to evaluate answers." };
-    }
+    const resolvedUser = (await getCurrentUser()) || {
+      id: "guest_candidate_id",
+      clerkId: "guest_candidate_local",
+      email: "candidate@nemotron-ats.local",
+      name: "Guest Candidate",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const user = resolvedUser;
 
     const trimmed = candidateAnswer.trim();
     if (!trimmed || trimmed.length < 5) {
