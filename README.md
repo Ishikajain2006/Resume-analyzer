@@ -2,7 +2,6 @@
 
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.25-black?style=flat&logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue?style=flat&logo=typescript)
-![NVIDIA AI](https://img.shields.io/badge/NVIDIA%20AI-Nemotron%203%20Super-76B900?style=flat&logo=nvidia)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4.1-38B2AC?style=flat&logo=tailwind-css)
 ![Clerk](https://img.shields.io/badge/Clerk-Authentication-6C47FF?style=flat&logo=clerk)
 
